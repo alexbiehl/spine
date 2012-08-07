@@ -24,7 +24,7 @@ CPPFLAGS         = $(CPPFLAGS_COMMON) $(CPPFLAGS_$(OS))
 CFLAGS_LINUX   = 
 CFLAGS_LINUX64 = 
 CFLAGS_MACOSX  = 
-CFLAGS_COMMON  = 	-pedantic -Wall -Wextra -Werror -Wno-missing-field-initializers
+CFLAGS_COMMON  = 	-pedantic -Wall -Wextra -Werror
 CFLAGS         = $(CFLAGS_COMMON) $(CFLAGS_$(OS))
 
 # Linker

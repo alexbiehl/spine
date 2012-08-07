@@ -19,7 +19,7 @@ int poll_register(struct poll *poll, int fd, int events) {
 		return poll_register(poll, fd, POLL_READ) && poll_register(poll, fd, POLL_WRITE);
 	} else {
 
-		struct kevent event = {0};
+		struct kevent event;
 
 		int filter = 0;
 
@@ -53,8 +53,7 @@ int poll_remove(struct poll *poll, int fd, int events) {
 		return poll_remove(poll, fd, POLL_READ) && poll_remove(poll, fd, POLL_WRITE);
 	} else {
 
-		struct kevent event = {0};
-
+		struct kevent event;
 		int filter = 0;
 
 		if (events & POLL_READ) {
