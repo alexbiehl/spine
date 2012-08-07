@@ -69,6 +69,22 @@ static int st_receive_data(struct stream *s, long long *bytes_read) {
 	return t;
 }
 
+static char *st_strnstr(char *haystack, char *needle, long long len) {
+
+  long long i, needle_len = strlen(needle);
+
+  for (i = 0; i + needle_len - 1 < len; ++i) {
+
+    if (haystack[i] == *needle) {
+      if (memcmp(haystack + i, needle, needle_len) == 0) {
+        return haystack + i + needle_len;
+      }
+    }
+  }
+
+  return 0;
+}
+
 static int st_can_process_read_callback(struct stream *s, char **out_buffer, long long *out_size) {
 
   char *buffer = array_start(&s->buffer);
@@ -86,11 +102,10 @@ static int st_can_process_read_callback(struct stream *s, char **out_buffer, lon
     case ST_CONDITION_UNTIL:
 
       {
-        char *t = strnstr(buffer, s->condition.delimiter, len);
+        char *t = st_strnstr(buffer, s->condition.delimiter, len);
 
-        if (t != NULL) {
-          t += strlen(s->condition.delimiter);
-
+        if (t) {
+          
           *out_buffer = buffer;
           *out_size = t - buffer;
 
