@@ -11,7 +11,7 @@ int poll_init(struct poll *poll) {
 
 static int epoll_op(int efd, int op, int fd, int events) {
 
-  struct epoll_event;
+  struct epoll_event e;
 
   e.events |= EPOLLIN * ((events & POLL_READ) != 0);
   e.events |= EPOLLOUT * ((events & POLL_WRITE) != 0);
