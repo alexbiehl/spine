@@ -1,5 +1,5 @@
 # Sources
-SRCS             = main.c loop.c net.c poll.c stream.c
+SRCS             = main.c loop.c net.c poll.c stream.c array.c
 
 # Target
 TARGET           = spine

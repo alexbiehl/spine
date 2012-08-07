@@ -12,41 +12,9 @@ struct array {
 
 typedef struct array array;
 
-static void *array_allocate(struct array *a, long long member_size, long long n) {
+void *array_allocate(struct array *a, long long member_size, long long n);
 
-	long long wanted = (n + 1) * member_size;
-
-	if (wanted < 0) {
-		return 0;
-	}
-
-	if (wanted > a->initialized) {
-
-		if (wanted >= a->allocated) {
-
-			if (member_size < 8) {
-				wanted = (wanted + 127) & (-128);
-			} else {
-				wanted = (wanted + 4095) & (-4096);
-			}
-
-			{
-				void *buffer = realloc(a->data, wanted);
-
-				if (!buffer) {
-					return 0;
-				}
-
-				a->data = buffer;
-				a->allocated = wanted;
-	 	  }
-		}
-
-		a->initialized = (n + 1) * member_size;
-	}
-
-  return (char *)a->data + n * member_size;
-}
+void array_free(struct array *a);
 
 static inline void *array_get(struct array *a, long long member_size, long long n) {
 
@@ -66,13 +34,6 @@ static inline long long array_length(struct array *a, long long member_size) {
 
 static inline void *array_start(struct array *a) {
   return a->data;
-}
-
-static inline void array_free(struct array *a) {
-
-  a->allocated = a->initialized = 0;
-
-  free(a->data);
 }
 
 static inline void array_catb(struct array *a, char *buffer, long long n) {
