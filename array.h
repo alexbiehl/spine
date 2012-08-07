@@ -12,7 +12,7 @@ struct array {
 
 typedef struct array array;
 
-static inline void *array_allocate(struct array *a, long long member_size, long long n) {
+static void *array_allocate(struct array *a, long long member_size, long long n) {
 
 	long long wanted = (n + 1) * member_size;
 
@@ -45,7 +45,7 @@ static inline void *array_allocate(struct array *a, long long member_size, long 
 		a->initialized = (n + 1) * member_size;
 	}
 
-  return a->data + n * member_size;
+  return (char *)a->data + n * member_size;
 }
 
 static inline void *array_get(struct array *a, long long member_size, long long n) {
@@ -56,7 +56,7 @@ static inline void *array_get(struct array *a, long long member_size, long long 
     return 0;
   }*/
 
-  return a->data + n * member_size;
+  return (char *)a->data + n * member_size;
 }
 
 static inline long long array_length(struct array *a, long long member_size) {
@@ -81,7 +81,7 @@ static inline void array_catb(struct array *a, char *buffer, long long n) {
 
   array_allocate(a, sizeof(char), l + n - 1);
 
-  memcpy(a->data + l, buffer, n);
+  memcpy((char *)a->data + l, buffer, n);
 }
 
 static inline void array_strip(struct array *a, long long member_size, long long n) {

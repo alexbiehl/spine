@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static int counter = 0;
-
 static void st_event_handler(struct poll_event *event, void *user_data);
 
 struct read_callback_ctx {
@@ -105,7 +103,7 @@ static int st_can_process_read_callback(struct stream *s, char **out_buffer, lon
         char *t = st_strnstr(buffer, s->condition.delimiter, len);
 
         if (t) {
-          
+
           *out_buffer = buffer;
           *out_size = t - buffer;
 

@@ -26,6 +26,9 @@ void close_callback(void *user_data) {
 
 void header_complete(char *header, long long header_size, void *user_data) {
 
+	(void)header;
+	(void)header_size;
+
 	//printf("%s", header);
 
 	st_writes(user_data, "HTTP/1.1 200 Ok\r\nContent-Length: 3\r\n\r\nabc");

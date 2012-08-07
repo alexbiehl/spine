@@ -2,11 +2,13 @@
 
 #include <fcntl.h>
 #include <netinet/in.h>
-#include <netdb.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <sys/socket.h>
+
+#include <netdb.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+
 #include <string.h>
 
 int set_non_block(int fd) {
