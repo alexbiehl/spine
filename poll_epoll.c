@@ -1,4 +1,3 @@
-
 #include "poll.h"
 
 #include <sys/epoll.h>
@@ -36,15 +35,10 @@ int poll_remove_all(struct poll *poll, int fd) {
 
 int poll_remove(struct poll *poll, int fd, int events) {
 
-  int new_events = 0;
-
-  new_events |= POLL_READ * ((events & POLL_WRITE) != 0);
-  new_events |= POLL_WRITE * ((events & POLL_READ) != 0);
-
-  if (!new_events) {
+  if (events == (POLL_READ | POLL_WRITE)) {
     return poll_remove_all(poll, fd);
   } else {
-    return poll_modify(poll, fd, new_events);
+    return poll_modify(poll, fd, events);
   }
 }
 
