@@ -31,22 +31,22 @@ struct stream_callback_ctx {
 
 static long long socket_read(int fd, char *buffer, long long size) {
 
-	int n = read(fd, buffer, size);
+  int n = read(fd, buffer, size);
 
-	if (n == -1) {
-		if (errno == EAGAIN || errno == EWOULDBLOCK) {
-			return -1;	
-		}
+  if (n == -1) {
+    if (errno == EAGAIN || errno == EWOULDBLOCK) {
+      return -1;
+    }
 
-		return -3;
-	}
+    return -3;
+  }
 
-	return n;
+    return n;
 }
 
 static int st_receive_data(struct stream *s, long long *bytes_read) {
 
-	char buffer[8192];
+  char buffer[8192];
   long long n = 0;
   int t;
 
@@ -65,7 +65,7 @@ static int st_receive_data(struct stream *s, long long *bytes_read) {
 
   *bytes_read = n;
 
-	return t;
+  return t;
 }
 
 static char *st_strnstr(char *haystack, char *needle, long long len) {
