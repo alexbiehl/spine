@@ -212,24 +212,21 @@ static void st_try_inline_read(struct stream *s) {
   long long buffer_len; 
 
   if (st_can_process_read_callback(s, &buffer, &buffer_len)) {
-    printf("INLINE\n");
     st_schedule_read_callback(s, buffer, buffer_len);
   } else {
     long long n; 
     int retval = st_receive_data(s, &n);
 
-    if (retval == 0 || retval == -3) {
-      st_close(s);
-    } else {
-
+    if (retval != 0 && retval != -3) {
       if (n > 0) {
         if (st_can_process_read_callback(s, &buffer, &buffer_len)) {
-          printf("INLINE\n");
           st_schedule_read_callback(s, buffer, buffer_len);
-        }       
+        }
       } else {
         st_add_io_state(s, LOOP_READ);
       }
+    } else {
+      st_close(s);
     }
   }
 }
@@ -247,23 +244,23 @@ static void st_handle_read(struct stream *s) {
   long long n;
   int retval = st_receive_data(s, &n);
 
-  if (retval == 0 || retval == -3) {
-    st_close(s);
-  } else {
+  if (retval != 0 && retval != -3) {
 
     if (n > 0) {
-      char *buffer; 
+      char *buffer;
       long long buffer_len;
 
       if (st_can_process_read_callback(s, &buffer, &buffer_len)) {
         st_schedule_read_callback(s, buffer, buffer_len);
-      }       
-    }
+      }             
+    } 
+  } else {
+    st_close(s);
   }
 }
 
 static void st_handle_write(struct stream *s) {
-  
+    
   int x = write(s->fd, array_start(&s->out_buffer), array_length(&s->out_buffer, sizeof(char)));
 
   if (x == -1) {
@@ -275,7 +272,6 @@ static void st_handle_write(struct stream *s) {
   if (array_length(&s->out_buffer, sizeof(char)) == 0) {
     st_schedule_write_callback(s);
   }
-
 }
 
 static void st_event_handler(struct poll_event *event, void *user_data) {
@@ -294,18 +290,18 @@ static void st_event_handler(struct poll_event *event, void *user_data) {
 
   if (event->events & LOOP_READ) {
     st_handle_read(stream);
-  }
 
-  if (st_is_closed(stream)) {
-    return;
+    if (st_is_closed(stream)) {
+      return;
+    } 
   }
 
   if (event->events & LOOP_WRITE) {
     st_handle_write(stream);
-  }
 
-  if (st_is_closed(stream)) {
-    return;
+    if (st_is_closed(stream)) {
+      return;
+    }
   }
 
   {
@@ -314,23 +310,23 @@ static void st_event_handler(struct poll_event *event, void *user_data) {
     new_events |= LOOP_READ * st_is_reading(stream);
     new_events |= LOOP_WRITE * st_is_writing(stream);
 
-    if (new_events != stream->events) {
-      if (new_events == 0) {
-        //loop_remove_handler(stream->loop, stream->fd);
-      } else {
+    if (new_events != 0 && new_events != stream->events) {
         stream->events = new_events;
         loop_modify_handler(stream->loop, stream->fd, new_events);
-      }
     }
   }
+}
+
+static void st_set_read_callback(struct stream *s, st_read_callback cb, void *user_data) {
+  s->read_callback.callback = cb;
+  s->read_callback.user_data = user_data;
 }
 
 void st_read_until(struct stream *s, char *delimiter, st_read_callback cb, void *user_data) {
 
   s->condition_type = ST_CONDITION_UNTIL;
   s->condition.delimiter = delimiter;
-  s->read_callback.callback = cb;
-  s->read_callback.user_data = user_data;
+  st_set_read_callback(s, cb, user_data);
 
   st_try_inline_read(s);
 }
@@ -339,8 +335,7 @@ void st_read_bytes(struct stream *s, long long bytes, st_read_callback cb, void 
 
   s->condition_type = ST_CONDITION_BYTES;
   s->condition.bytes = bytes;
-  s->read_callback.callback = cb;
-  s->read_callback.user_data = user_data;
+  st_set_read_callback(s, cb, user_data);
 
   st_try_inline_read(s);
 }
