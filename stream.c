@@ -1,6 +1,7 @@
 
 #include "stream.h"
 
+#include <assert.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
@@ -95,6 +96,7 @@ static int st_can_process_read_callback(struct stream *s, char **out_buffer, lon
   switch (s->condition_type) {
 
     case ST_CONDITION_NONE:
+      assert(0 && "Should not happen!");
       break;
 
     case ST_CONDITION_UNTIL:
