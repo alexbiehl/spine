@@ -1,4 +1,3 @@
-
 #include "stream.h"
 
 #include <assert.h>
@@ -105,7 +104,6 @@ static int st_can_process_read_callback(struct stream *s, char **out_buffer, lon
         char *t = st_strnstr(buffer, s->condition.delimiter, len);
 
         if (t) {
-
           *out_buffer = buffer;
           *out_size = t - buffer;
 
@@ -158,9 +156,7 @@ static void st_delegate_stream_callback(void *user_data) {
 
 static void st_schedule_stream_callback(struct stream *s, void (*callback)(void *), void *user_data) {
 
-  if (callback == 0) {
-    return;
-  }
+  assert(callback != 0);
 
   struct stream_callback_ctx *ctx = malloc(sizeof(*ctx));
 
@@ -172,6 +168,8 @@ static void st_schedule_stream_callback(struct stream *s, void (*callback)(void 
 }
 
 static void st_schedule_read_callback(struct stream *s, char *data, long long size) {
+
+  assert(s->read_callback.callback != 0);
 
   struct read_callback_ctx *ctx = malloc(sizeof(*ctx));
 
@@ -307,12 +305,11 @@ static void st_event_handler(struct poll_event *event, void *user_data) {
   }
 
   {
-    int new_events = 0;
+    int new_events = LOOP_READ;
 
-    new_events |= LOOP_READ * st_is_reading(stream);
     new_events |= LOOP_WRITE * st_is_writing(stream);
 
-    if (new_events != 0 && new_events != stream->events) {
+    if (new_events != stream->events) {
         stream->events = new_events;
         loop_modify_handler(stream->loop, stream->fd, new_events);
     }
