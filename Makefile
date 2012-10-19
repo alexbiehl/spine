@@ -11,7 +11,7 @@ OBJS             = $(SRCS:.c=.o)
 DEBUG = yes
 
 # Compiler
-CC               = clang
+CC               = gcc
 
 # Precompiler flags
 CPPFLAGS_LINUX   = -DLINUX
@@ -24,11 +24,11 @@ CPPFLAGS         = $(CPPFLAGS_COMMON) $(CPPFLAGS_$(OS))
 CFLAGS_LINUX   = 
 CFLAGS_LINUX64 = 
 CFLAGS_MACOSX  = 
-CFLAGS_COMMON  = 	-pedantic -Wall -Wextra -Werror
+CFLAGS_COMMON  = -O2 -pedantic -Wall -Wextra -Werror -std=c99
 CFLAGS         = $(CFLAGS_COMMON) $(CFLAGS_$(OS))
 
 # Linker
-LD               = clang
+LD               = gcc
 
 # Linker flags
 LDFLAGS_LINUX    = 

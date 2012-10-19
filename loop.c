@@ -73,7 +73,7 @@ int loop_modify_handler(struct loop *l, int fd, int events) {
 
 	if (h->events != events) {
 
-		poll_remove(&l->poll, fd, h->events);
+    poll_remove_all(&l->poll, fd);
 		poll_register(&l->poll, fd, events);
 
 		h->events = events;

@@ -1,5 +1,7 @@
 #include "net.h"
 
+#define _POSIX_SOURCE
+
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <unistd.h>

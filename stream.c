@@ -235,9 +235,9 @@ static int st_is_writing(struct stream *s) {
   return array_length(&s->out_buffer, sizeof(char)) > 0;
 }
 
-static int st_is_reading(struct stream *s) {
-  return s->read_callback.callback != 0;
-}
+//static int st_is_reading(struct stream *s) {
+//  return s->read_callback.callback != 0;
+//}
 
 static void st_handle_read(struct stream *s) {
 
