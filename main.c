@@ -21,7 +21,7 @@ void close_callback(void *user_data) {
 
 	counter--;
 
-	printf("%u\n", counter);
+//	printf("%u\n", counter);
 }
 
 void header_complete(char *header, long long header_size, void *user_data) {
